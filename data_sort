@@ -1,0 +1,469 @@
+#include <stdio.h>
+#include <string.h>
+//structure
+struct {
+  int ranking;
+  char grade;
+  char firstname[50];
+  char lastname[50];
+  float time;
+} typedef runner_t;
+
+//Prototypes
+void FunctionDisplay (runner_t record[], int count);//Displays all of the data saved in the file
+void FunctionSearchRunner (runner_t record[], int count);//Allows the user to choose which category they choose to search
+void FunctionSortData (runner_t record[], int count);//Allows the user to choose which category they choose to search
+void FunctionAddRunner (runner_t record[], int *count);//Allows the user to add a record
+void FunctionDeleteRunner (runner_t record [], int *count);//Allows the user to delete records
+int FunctionReadFile (runner_t record[]);//Reads the information in the file and saves it into an array
+int FunctionSaveData (runner_t record[], int count);//This saves the changes made by user
+
+int main (void){
+  
+  runner_t record[60];
+  
+  int count;//count the number of records
+  int option=20;
+  //I just gave this variable a random number so it doesn't intefere with the menu options
+  
+  count=FunctionReadFile(record);
+  //Read the file, and initialize a count value
+  
+  while (option!=0){
+    //Menu
+    printf("\n\n\n\nMAIN MENU: \n\n");
+    printf("[1]Display file\n");
+    printf("[2]Search file\n");
+    printf("[3]Sort file\n");
+    printf("[4]Add to file\n");
+    printf("[5]Delete\n");
+    printf("[6]Save\n");
+    printf("[0]Exit\n");
+    printf("Please enter a number between 1 through 6: ");
+    scanf("%d", &option);
+    while (option>6||option<0){
+      //Make sure user enters a valid option
+      printf("I am sorry, but that is not a valid input.\n");
+      printf("Please enter a number between 1 and 6: ");
+      scanf("%d", &option);
+    }  
+  
+  //switch statement that checks each case
+  switch(option){
+    case 1:
+    printf ("You chose option 1\n");
+    //call function
+    FunctionDisplay(record, count);
+    break;
+    case 2:
+    printf ("You chose option 2\n");
+    //call function
+    FunctionSearchRunner(record, count);
+    break;
+    case 3:
+    printf ("You chose option 3\n");
+    //call function
+    FunctionSortData(record, count);
+    break;
+    case 4:
+    printf ("You chose option 4");
+    //call function
+    FunctionAddRunner(record, &count);
+    break;
+    case 5:
+    printf ("You chose option 5");
+    //call function
+    FunctionDeleteRunner(record, &count);
+    break;
+    case 6:
+    printf ("You chose option 6");
+    //call function
+    FunctionSaveData(record, count);
+    break;
+  } 
+ 
+  }
+  
+  
+  return(0); 
+}
+void FunctionDisplay (runner_t record[], int count){//Displays the data
+  int j;
+  
+  for(j=0; j<count; j++){
+    printf("\n\n");
+    printf("Rank:%d\nGrade:%c\nFirst Name:%s\nLast Name:%s\nTime:%f\n", record[j].ranking, record[j].grade, record[j].firstname, record[j].lastname, record[j].time);
+  }
+}  
+void FunctionSearchRunner (runner_t record[], int count){
+  int catnum;//variable that represents the category number chosen by user
+  int j;//used for loops
+  char firstnamestring[50];//string that holds the name user is looking for.
+  char lastnamestring[50];//string that holds the name user is looking for.
+  float timenum;//holds time that the user wants to search
+  int timesearch;//Variable that determines what to display
+  //It will indicate whether to display time that is above or below the time inserted(this time's value is 
+  //saved to the variable timenum
+  int check;
+  int match=0;//variable that holds the amount of matches executed after the user decided to search something
+
+  //Give user the option to choose which category they wish to search through
+  printf("\nCategories:\n");
+  printf("[1]First Name\n[2]Last Name\n[3]Time\n");
+  printf("Please enter a category you would like to search through:");
+  scanf("%d", &catnum);
+  while (catnum<1 || catnum>3){
+    //This makes sure that the user inputs a valid number
+    printf("\nWhoops! Invalid input. Try again!\n");
+    printf("\nPlease enter a category you would like to search through:");
+    scanf("%d", &catnum);
+  }
+  
+  
+  
+  //If statements for each option user inputs
+  
+  
+  
+  
+  
+  //if user wants to search through first name:
+  if (catnum==1){
+    printf("\nEnter the first name of the runner you are looking for:\n");
+    scanf("%s", firstnamestring);
+    
+    for(j=0;j<count;j++) {
+        check = strcmp(firstnamestring, record[j].firstname);
+        if (check==0){
+          printf ("\n");
+          printf("Ranking:%d\n",record[j].ranking);
+          printf("Grade:%c\n",record[j].grade);
+          printf("First Name:%s\n",record[j].firstname);
+          printf("Last Name:%s\n",record[j].lastname);
+          printf("Time:%f\n",record[j].time);
+          match++;
+        }
+    }
+    //Displays the number of matches that occured.
+    //Matches is the amount of times the function went through the if statement above
+    printf("Matches:%d",match);
+  }
+  
+  
+  //If user wants to search through last names
+  else if (catnum==2){
+    printf("\nEnter the last name of the runner you are looking for:\n");
+    scanf("%s", lastnamestring);
+    
+    for(j=0;j<count;j++) {
+        check = strcmp(lastnamestring, record[j].lastname);
+        if (check==0){
+          printf("Ranking:%d\n",record[j].ranking);
+          printf("Grade:%c\n",record[j].grade);
+          printf("First Name:%s\n",record[j].firstname);
+          printf("Last Name:%s\n",record[j].lastname);
+          printf("Time:%f\n",record[j].time);
+          match++;
+        }
+    }
+    printf("Matches:%d",match);
+  
+  } 
+  //If user wants to search through times
+  else if (catnum==3){
+    printf("\nYou have chosen to search through times!\n");
+    printf("\nPlease enter a time:");
+    scanf("%f", &timenum);
+    printf ("\nSort by:\n [1]Bigger Times\n [2]Smaller Times\n");
+    printf("Input your choice:");
+    scanf ("%d", &timesearch);
+    //Made a loop so that the user enters a valid input
+    while (timesearch!=1 && timesearch!=2){
+      printf("\nInvalid input. Please try again.\n\n Sort by:\n [1]Data Above\n [2]Data below\n");
+      printf("Input your choice:");
+      scanf ("%d", &timesearch);
+    }  
+    
+    
+    //Made a switch for both cases depending on what times the user wants to search
+    switch(timesearch){
+      case 1:
+      for (j=0;j<count;j++) {
+        if( record[j].time >= timenum) {
+          printf("\n");
+          printf("Ranking:%d\n",record[j].ranking);
+          printf("Grade:%c\n",record[j].grade);
+          printf("First Name:%s\n",record[j].firstname); 
+          printf("Last Name:%s\n",record[j].lastname); 
+          printf("Time:%f\n",record[j].time);
+          match++;
+          }
+      }
+      printf("Matches:%d",match);
+      break;
+      case 2:
+      for (j=0;j<count;j++) {
+        if( record[j].time <= timenum) {
+          printf("\n");
+          printf("Ranking:%d\n",record[j].ranking);
+          printf("Grade:%c\n",record[j].grade);
+          printf("First Name:%s\n",record[j].firstname); 
+          printf("Last Name:%s\n",record[j].lastname); 
+          printf("Time:%f\n",record[j].time);
+          match++;          
+          } 
+      }
+      printf("Matches:%d",match);
+      break;
+    }
+  }
+  }  
+void FunctionSortData (runner_t record[], int count){
+  //Give the user the option to sort through a specific category
+  int sortnum;
+  int sort[60];
+  int j;
+  int k;
+  int val;
+  int swap;
+  int timesearch;
+  int i;
+  for(i=0;i<60; i++){
+    sort[i]=i;
+  }  
+  
+  printf("Which category would you like to sort through?\n");
+  printf("[1]First Name\n[2]Last Name\n[3]Time\n");
+  printf("Enter a number between 1 and 3:");
+  scanf("%d", &sortnum);
+  
+  while(sortnum<1||sortnum>3){
+    printf("\nInvalid Input. Please try again!\n");
+    printf("Enter a number between 1 and 3:");
+    scanf("%d", &sortnum);
+    
+  }
+  
+  if(sortnum==1){/////////SORT FIRST NAME ALPHABETIZED
+    printf("\nYou have chosen to sort through First Names!\n");
+    printf("\n The new alphabetized List:\n"); 
+    for (k=0; k<count-1; k++){
+        for(j=0; j<count-1; j++){
+            val = strcmp(record[sort[j]].firstname, record[sort[j+1]].firstname);
+            if (val>0) {
+                swap=sort[j];
+                sort[j]=sort[j+1];
+                sort[j+1]=swap; 
+            }    
+        }
+    }
+  }
+  else if(sortnum==2){//////////SORT LAST NAME ALPHABETIZED
+    printf("\nYou have chosen to sort through Last Names!\n");
+    printf("\n The new alphabetized List:\n"); 
+    for (k=0; k<count-1; k++){
+        for(j=0; j<count-1; j++){
+            val = strcmp(record[sort[j]].lastname, record[sort[j+1]].lastname);
+            if (val>0) {
+                swap=sort[j];
+                sort[j]=sort[j+1];
+                sort[j+1]=swap; 
+            }    
+        }
+    }
+    
+  }
+  else if(sortnum==3){/////////SORT TIME
+    printf("\nYou have chosen to sort through Times!\n");
+    printf("\n[1]Sort times by ascending order\n[2]Sort times by descending order\n");
+    printf("Enter a number:");
+    scanf("%d", &timesearch);
+    while(timesearch!=1&&timesearch!=2){
+      printf("\nInvalid input\n Please Try again\nEnter a number:");
+      scanf("%d", &timesearch);
+    }
+    
+    ////Ascending order of times
+    if (timesearch==1){
+      printf("\nList in Ascending Order:\n");
+      
+      for (k=0; k<count-1; k++){
+        for(j=0; j<count-1; j++){
+          if (record[sort[j]].time>record[sort[j+1]].time) {
+            swap=sort[j];
+            sort[j]=sort[j+1];
+            sort[j+1]=swap;   
+          } 
+        }
+      }
+    }
+    ////Descending order of times
+    else if(timesearch==2){
+      printf("\nList in Descending Order:\n");
+      for (k=0; k<count-1; k++){
+        for(j=0; j<count-1; j++){
+          if (record[sort[j]].time<record[sort[j+1]].time) {
+            swap=sort[j];
+            sort[j]=sort[j+1];
+            sort[j+1]=swap;   
+          } 
+        }
+      }
+    }
+    
+    
+    
+    
+  }
+  
+  
+  //Display the sorted information but it does not make any changes to the file
+  for(j=0;j<count;j++) {
+    printf("\n");
+    printf("Ranking:%d\n",record[sort[j]].ranking);
+    printf("Grade:%c\n",record[sort[j]].grade);
+    printf("First Name:%s\n",record[sort[j]].firstname);
+    printf("Last Name:%s\n",record[sort[j]].lastname);
+    printf("Time:%f\n",record[sort[j]].time);
+  }
+}
+void FunctionAddRunner (runner_t record[], int *count){
+  int i=*count;//save the count number as a variable in order to save the new info at bottom of file
+  char jnk;
+  printf("\n");
+  printf("Please enter the ranking number:");
+  scanf("%d", &record[i].ranking);
+  printf("\n");
+  printf("Please enter the Grade level:");
+  scanf("%c%c",&jnk, &record[i].grade);
+  printf("\n");
+  printf("Please enter the first name:");
+  scanf("%s", record[i].firstname);
+  printf("\n");
+  printf("Please enter the last name:");
+  scanf("%s", record[i].lastname);
+  printf("\n");
+  printf("Please enter the time:");
+  scanf("%f", &record[i].time);
+  printf("\n");
+  //Once the values are saved, update the value of the count
+  *count=i+1;
+}
+void FunctionDeleteRunner (runner_t record [], int *count){
+  char firstnamestring[50];
+  int i;
+  int j;
+  int check;
+  int countvalue;
+  countvalue=*count;
+  
+  
+  printf("\nWhose account do you wish to delete?:\n");
+  printf("Please enter their first name:\n");
+  scanf("%s",firstnamestring);
+  
+  //If the input matches a name from the file, change the array values so that you don't display the unwanted record
+  
+    for(j=0;j<countvalue;j++) {
+      check = strcmp(firstnamestring, record[j].firstname);
+      if (check==0){
+        //make a for loop that renumbers the arrays
+        for(i=j;i<countvalue;i++){
+          record[j]=record[j+1];
+          //Update the count value which represents how many records are stored
+          *count=countvalue-1; 
+        }     
+      }
+    }
+
+
+
+
+}
+int FunctionReadFile (runner_t record[]){
+  
+  int i=0;
+  char jnk;
+  FILE *ifile;
+  char filename[50];
+  
+  
+  printf("Enter a file name:");
+  scanf("%s", filename);
+  ifile=fopen(filename,"r"); 
+  
+  //Make sure the user enters a valid input
+  while (ifile==NULL){
+    printf("File does not exist.\n Please Try Again:\nEnter a file name:\n");
+    scanf("%s", filename);
+    ifile=fopen(filename, "r");
+  }
+  
+ //Save the values in the file into the array record[]
+  while (fscanf(ifile, "%d,%c,%[^,],%[^,],%f%c", &record[i].ranking, &record[i].grade, record[i].firstname, record[i].lastname, &record[i].time, &jnk)!=EOF){
+    i++;
+  }
+  fclose(ifile);
+  return(i);
+  
+}
+int FunctionSaveData (runner_t record[], int count){//do we want to be able to save sorting changes?
+  char SaveFile[30];
+  FILE *ofile;
+  int j;
+  int continueoption;
+  
+  
+  printf("Enter file name followed by /'.txt/':");
+  scanf("%s", SaveFile);
+  
+  
+  //If file Exists, give user the option to continue, use a default file, or go back to main menu
+  if (SaveFile!=NULL){
+    printf("The file already exists!\nWARNING!You might overwrite!\n\n Do you wish to continue using this file?\n");
+    printf("[1]Yes\n[2]No, use default file\n[3]No, return to main menu\n");
+    scanf("%d",&continueoption);
+    while (continueoption!=1&&continueoption!=2&&continueoption!=2){
+      printf("\nInvalid input. Try again\n\n");
+      printf("[1]Yes\n[2]No, use default file\n[3]No, return to main menu\n");
+      scanf("%d",&continueoption);
+    }  
+   
+    if (continueoption==2){//option for default
+      ofile=fopen("LA2_newFile.txt", "w");
+      for (j=0; j<count; j++){
+      fprintf(ofile, "%d,%c,%s,%s,%f\n", record[j].ranking, record[j].grade, record[j].firstname, record[j].lastname, record[j].time);
+      }
+      fclose(ofile);
+    }
+    
+    else if (continueoption==1){//Option for continue
+      ofile=fopen(SaveFile, "w");
+      for (j=0; j<count; j++){
+        fprintf(ofile, "%d,%c,%s,%s,%f\n", record[j].ranking, record[j].grade, record[j].firstname, record[j].lastname, record[j].time);
+      }
+  
+      fclose(ofile);
+    }
+    else if (continueoption==3){//option for go back to main menu
+      printf("\n Returning to main menu...");
+      return(0);
+    }
+  }  
+  
+  
+  
+  
+  
+  //If file does not exist, tell user.
+  else if (SaveFile==NULL){
+    printf("File does not exist\nCreating new file...\n\n\n ");
+    ofile=fopen(SaveFile, "w");
+    for (j=0; j<count; j++){
+      fprintf(ofile, "%d,%c,%s,%s,%f\n", record[j].ranking, record[j].grade, record[j].firstname, record[j].lastname, record[j].time);
+    }
+    fclose(ofile);
+    printf("Success!Data is now saved :)\n\n");
+  }
+  return(0);
+}
